@@ -1,20 +1,23 @@
 package main
 
 import (
-	"backend/apps/auth/run"
-	"context"
-	"os"
-	"os/signal"
-	"syscall"
-
+	"log"
+	"backend/pkg/common/db"
 	"github.com/joho/godotenv"
+	"backend/apps/auth/internal/model"
 )
 
 func main() {
 	_ = godotenv.Load()
 
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
+	dbConn, err := db.NewPostgresConnection()
+	if err != nil {
+		log.Fatal("failed to connect DB: ", )
+	}
 
-	run.Run(ctx)
+	err = db.RunAutoMigrate(dbConn, model.UserAuth{})
+	if err != nil {
+		log.Fatalf("migration failed: %v", err)
+	} 
+
 }
