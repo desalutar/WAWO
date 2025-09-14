@@ -9,6 +9,7 @@ package auth
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -25,7 +26,6 @@ type RegisterRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -70,13 +70,6 @@ func (x *RegisterRequest) GetUsername() string {
 func (x *RegisterRequest) GetPassword() string {
 	if x != nil {
 		return x.Password
-	}
-	return ""
-}
-
-func (x *RegisterRequest) GetEmail() string {
-	if x != nil {
-		return x.Email
 	}
 	return ""
 }
@@ -285,11 +278,10 @@ var File_proto_auth_proto protoreflect.FileDescriptor
 
 const file_proto_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x10proto/auth.proto\x12\x04auth\"_\n" +
+	"\x10proto/auth.proto\x12\x04auth\x1a\x1bgoogle/protobuf/empty.proto\"I\n" +
 	"\x0fRegisterRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x14\n" +
-	"\x05email\x18\x03 \x01(\tR\x05email\"F\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"F\n" +
 	"\fLoginRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"C\n" +
@@ -301,9 +293,9 @@ const file_proto_auth_proto_rawDesc = "" +
 	"\x05token\x18\x01 \x01(\tR\x05token\"<\n" +
 	"\x10ValidateResponse\x12\x14\n" +
 	"\x05valid\x18\x01 \x01(\bR\x05valid\x12\x12\n" +
-	"\x04user\x18\x02 \x01(\tR\x04user2\xb0\x01\n" +
-	"\vAuthService\x125\n" +
-	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x12.auth.AuthResponse\x12/\n" +
+	"\x04user\x18\x02 \x01(\tR\x04user2\xb4\x01\n" +
+	"\vAuthService\x129\n" +
+	"\bRegister\x12\x15.auth.RegisterRequest\x1a\x16.google.protobuf.Empty\x12/\n" +
 	"\x05Login\x12\x12.auth.LoginRequest\x1a\x12.auth.AuthResponse\x129\n" +
 	"\bValidate\x12\x15.auth.ValidateRequest\x1a\x16.auth.ValidateResponseB\x1bZ\x19backend/pkg/gen/auth;authb\x06proto3"
 
@@ -326,12 +318,13 @@ var file_proto_auth_proto_goTypes = []any{
 	(*AuthResponse)(nil),     // 2: auth.AuthResponse
 	(*ValidateRequest)(nil),  // 3: auth.ValidateRequest
 	(*ValidateResponse)(nil), // 4: auth.ValidateResponse
+	(*emptypb.Empty)(nil),    // 5: google.protobuf.Empty
 }
 var file_proto_auth_proto_depIdxs = []int32{
 	0, // 0: auth.AuthService.Register:input_type -> auth.RegisterRequest
 	1, // 1: auth.AuthService.Login:input_type -> auth.LoginRequest
 	3, // 2: auth.AuthService.Validate:input_type -> auth.ValidateRequest
-	2, // 3: auth.AuthService.Register:output_type -> auth.AuthResponse
+	5, // 3: auth.AuthService.Register:output_type -> google.protobuf.Empty
 	2, // 4: auth.AuthService.Login:output_type -> auth.AuthResponse
 	4, // 5: auth.AuthService.Validate:output_type -> auth.ValidateResponse
 	3, // [3:6] is the sub-list for method output_type

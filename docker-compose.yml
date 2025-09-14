@@ -27,7 +27,19 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "9090:9090"
+      - "50054:50054" 
+    networks:
+      - backend
+
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    command: ["redis-server", "--requirepass", "${CACHE_PASSWORD}"]
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
     networks:
       - backend
 
