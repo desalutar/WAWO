@@ -1,4 +1,15 @@
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5500:5500"
+    depends_on:
+      - auth
+    networks:
+      - backend
+
   db:
     image: postgres:17
     container_name: postgres
@@ -19,7 +30,7 @@ services:
 
   auth:
     build:
-      context: .
+      context: ./backend
       dockerfile: apps/auth/Dockerfile
     env_file:
       - ./.env

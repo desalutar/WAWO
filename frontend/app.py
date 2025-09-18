@@ -3,13 +3,9 @@ from proto import auth_pb2, auth_pb2_grpc
 from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
-app.secret_key = "секретная_строка_для_сессии"
 
-channel = grpc.insecure_channel("localhost:50051")
+channel = grpc.insecure_channel("auth:50054")
 stub = auth_pb2_grpc.AuthServiceStub(channel)
-
-# users = {}
-# messages = []
 
 @app.route("/")
 def index():
@@ -26,29 +22,15 @@ def register():
             return redirect(url_for("messenger"))
         except grpc.RpcError as e:
             return f"Ошибка Логина: {e.details()}"
-        return render_template("register.html")
-
-# @app.route("/register", methods=["GET", "POST"])
-# def register():
-#     if request.method == "POST":
-#         username = request.form["username"]
-#         password = request.form["password"]
-
-#         if username in users:
-#             return "такой пользователь существует"
-        
-#         users[username] = password
-#         session["username"] = username
-#         return redirect(url_for("messenger"))
-
-#     return render_template("register.html")
+    
+    return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-
+// TODO: изменить путь к данным теперь он берется из бекенда из прото 
         if username in users and users[username] == password:
             session["username"] = username
             return redirect(url_for("messenger"))
@@ -78,4 +60,4 @@ def clear_messages():
     return redirect('/messenger')
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5500)
+    app.run(host="0.0.0.0", port=5500, debug=True)

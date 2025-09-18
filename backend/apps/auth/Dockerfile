@@ -18,5 +18,5 @@ FROM alpine:latest
 WORKDIR /root
 COPY --from=builder /auth .
 
-EXPOSE 9090
+EXPOSE 50054
 CMD ["./auth"]
