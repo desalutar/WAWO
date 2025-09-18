@@ -30,11 +30,15 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-// TODO: изменить путь к данным теперь он берется из бекенда из прото 
-        if username in users and users[username] == password:
-            session["username"] = username
-            return redirect(url_for("messenger"))
-        return "неверный логин или пароль"
+        try: 
+            response = stub.Login(auth_pb2.LoginRequest(username=username, password=password))
+            if response.success: 
+                session["username"] = username
+                return redirect(url_for("messenger"))
+            else:
+                return "Неверный логин или пароль"
+        except grpc.RpcError as e:
+            return f"Ошибка входа: {e.details()}"
 
     return render_template("login.html")
  
