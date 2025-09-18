@@ -28,9 +28,6 @@ def register():
             return f"Ошибка Логина: {e.details()}"
         return render_template("register.html")
 
-
-
-
 # @app.route("/register", methods=["GET", "POST"])
 # def register():
 #     if request.method == "POST":
