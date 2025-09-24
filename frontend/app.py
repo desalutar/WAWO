@@ -6,6 +6,11 @@ app = Flask(__name__)
 
 channel = grpc.insecure_channel("auth:50054")
 stub = auth_pb2_grpc.AuthServiceStub(channel)
+app.secret_key = "любая_уникальная_строка_секретная"
+
+messages = []
+chats = {}
+
 
 @app.route("/")
 def index():
@@ -32,8 +37,9 @@ def login():
         password = request.form["password"]
         try: 
             response = stub.Login(auth_pb2.LoginRequest(username=username, password=password))
-            if response.success: 
+            if response.token: 
                 session["username"] = username
+                session["token"] = response.token
                 return redirect(url_for("messenger"))
             else:
                 return "Неверный логин или пароль"
@@ -56,7 +62,13 @@ def messenger():
         msg = request.form["message"]
         messages.append(f"{session['username']}: {msg}")
 
-    return render_template("messenger.html", username=session["username"], messages=messages)
+    return render_template(
+        "messenger.html",
+        username=session["username"],
+        messages=messages,
+        chats=chats,
+        chat_user=None
+    )
 
 @app.route('/clear', methods=['POST'])
 def clear_messages():
