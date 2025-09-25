@@ -24,10 +24,10 @@ type Auth struct {
 	cache  	cache.Cacher
 }
 
-func NewAuthRepo(db *gorm.DB, cache *cache.Cacher) *Auth {
+func NewAuthRepo(db *gorm.DB, cache cache.Cacher) *Auth {
 	return &Auth{
 		db: 	 db,
-		cache: 	 *cache,
+		cache: 	 cache,
 	}
 }
 
