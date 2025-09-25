@@ -4,19 +4,19 @@ WORKDIR /app
 
 COPY go.work go.mod ./
 COPY pkg/go.mod ./pkg/
-COPY apps/auth/go.mod ./apps/auth/
+COPY apps/chat/go.mod ./apps/chat/
 
 RUN go work sync && go mod download
 
 COPY . .
 
-WORKDIR /app/apps/auth
-RUN go build -o /auth ./cmd/main.go
+WORKDIR /app/apps/chat
+RUN go build -o /chat ./cmd/main.go
 
 FROM alpine:latest
 
 WORKDIR /root
-COPY --from=builder /auth .
+COPY --from=builder /chat .
 
-EXPOSE 50051
-CMD ["./auth"]
+EXPOSE 50052
+CMD ["./chat"]
