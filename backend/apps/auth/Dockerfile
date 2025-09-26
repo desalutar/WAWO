@@ -6,9 +6,10 @@ COPY go.work go.mod ./
 COPY pkg/go.mod ./pkg/
 COPY apps/auth/go.mod ./apps/auth/
 
+COPY . .
+
 RUN go work sync && go mod download
 
-COPY . .
 
 WORKDIR /app/apps/auth
 RUN go build -o /auth ./cmd/main.go

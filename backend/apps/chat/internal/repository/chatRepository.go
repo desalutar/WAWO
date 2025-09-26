@@ -20,10 +20,10 @@ type Chat struct {
 	cache 	cache.Cacher
 }
 
-func NewChatRepo(db *gorm.DB, cache *cache.Cacher) *Chat {
+func NewChatRepo(db *gorm.DB, cache cache.Cacher) *Chat {
 	return &Chat{
 		db: db,
-		cache: *cache,
+		cache: cache,
 	}
 }
 
