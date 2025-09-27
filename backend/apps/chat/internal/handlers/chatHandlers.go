@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"backend/apps/chat/internal/model"
 	"backend/apps/chat/internal/service"
 	chat "backend/pkg/gen/chat/proto"
 	"context"
 
-	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type ChatHandler struct {
@@ -30,7 +31,7 @@ func (h *ChatHandler) GetDialogs(ctx context.Context, req *chat.GetDialogsReques
 	for _, d := range dialogs {
 		protoDialogs = append(protoDialogs, &chat.DialogSummary{
 			DialogId: 		uint32(d.ID),
-			ParticipantIds: uintSliceToUint32(d.ParticipantIDs),
+			ParticipantIds: participantsToUint32(d.Participants),
 			LastMessage: 	d.LastMessage,
 			LastUpdated: 	d.LastUpdated.Unix(),
 		})
@@ -39,10 +40,10 @@ func (h *ChatHandler) GetDialogs(ctx context.Context, req *chat.GetDialogsReques
 	return &chat.GetDialogsResponse{Dialogs: protoDialogs}, nil
 }
 
-func uintSliceToUint32(s []uint) []uint32 {
+func participantsToUint32(s []model.DialogParticipant) []uint32 {
     res := make([]uint32, len(s))
     for i, v := range s {
-        res[i] = uint32(v)
+        res[i] = uint32(v.UserID)
     }
     return res
 }

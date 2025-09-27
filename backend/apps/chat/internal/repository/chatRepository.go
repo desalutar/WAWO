@@ -27,18 +27,35 @@ func NewChatRepo(db *gorm.DB, cache cache.Cacher) *Chat {
 	}
 }
 
-func (c *Chat) GetDialogs(userID uint) ([]model.Dialog, error) {
-	var dialogs []model.Dialog
-	err := c.db.
-		Where("? = ANY(participant_ids)", userID).
-		Order("last_updated desc").
-		Find(&dialogs).Error
-	if err != nil {
-		log.Println("Error in GetDialogs")
-		return nil, err 
-	}
+// func (c *Chat) GetDialogs(userID uint) ([]model.Dialog, error) {
+// 	var dialogs []model.Dialog
+// 	err := c.db.
+// 		Where("? = ANY(participant_ids)", userID).
+// 		Order("last_updated desc").
+// 		Find(&dialogs).Error
+// 	if err != nil {
+// 		log.Println("Error in GetDialogs")
+// 		return nil, err 
+// 	}
 	
-	return dialogs , nil
+// 	return dialogs , nil
+// }
+
+func (c *Chat) GetDialogs(userID uint) ([]model.Dialog, error) {
+    var dialogs []model.Dialog
+	err := c.db.
+		Preload("Participants", "user_id != ?", userID).
+		Joins("JOIN dialog_participants dp ON dp.dialog_id = dialogs.id").
+		Where("dp.user_id = ?", userID).
+		Order("last_updated DESC").
+		Find(&dialogs).Error
+
+    if err != nil {
+        log.Println("Error in GetDialogs:", err)
+        return nil, err
+    }
+
+    return dialogs, nil
 }
 
 func (c *Chat) GetMessages(dialogID uint) ([]model.Message, error) {

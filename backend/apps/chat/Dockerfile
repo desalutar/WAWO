@@ -11,7 +11,6 @@ COPY . .
 RUN go work sync && go mod download
 
 
-
 WORKDIR /app/apps/chat
 RUN go build -o /chat ./cmd/main.go
 

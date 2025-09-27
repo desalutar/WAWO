@@ -28,7 +28,7 @@ func StartChatServer(logger *zap.Logger, storage repository.Chater) {
 
 	reflection.Register(grpcServer)
 
-	log.Println("Chat_gRPC_Server запущен на :50051")
+	log.Println("Chat_gRPC_Server запущен на :50052")
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("ошибка запуска Chat_gRPC_Server: %v", err)
 	}

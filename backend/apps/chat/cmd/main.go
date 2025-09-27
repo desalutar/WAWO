@@ -20,7 +20,7 @@ func main() {
 		log.Fatal("failed to connect DB: ", )
 	}
 
-	err = db.RunAutoMigrate(dbConn, model.Dialog{})
+	err = db.RunAutoMigrate(dbConn, model.Dialog{}, model.DialogParticipant{})
 	if err != nil {
 		log.Fatalf("migration failed: %v", err)
 	} 

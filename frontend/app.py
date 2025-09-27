@@ -4,13 +4,9 @@ from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
 
-channel = grpc.insecure_channel("auth:50054")
+channel = grpc.insecure_channel("auth:50051")
 stub = auth_pb2_grpc.AuthServiceStub(channel)
 app.secret_key = "любая_уникальная_строка_секретная"
-
-messages = []
-chats = {}
-
 
 @app.route("/")
 def index():
