@@ -4,6 +4,7 @@ from grpc_client import stub
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
+
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -24,11 +25,9 @@ def login():
         password = request.form["password"]
         try:
             response = stub.Login(auth_pb2.LoginRequest(username=username, password=password))
-            if response.success:
-                session["username"] = username
-                return redirect(url_for("messenger.messenger"))
-            else:
-                return "Неверный логин или пароль"
+            session["username"] = username
+            session["token"] = response.token
+            return redirect(url_for("messenger.messenger"))
         except Exception as e:
             return f"Ошибка входа: {str(e)}"
     return render_template("login.html")
@@ -36,4 +35,5 @@ def login():
 @auth_bp.route("/logout")
 def logout():
     session.pop("username", None)
+    session.pop("token", None)
     return redirect(url_for("auth.login"))

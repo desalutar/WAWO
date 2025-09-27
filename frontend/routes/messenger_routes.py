@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 
 messenger_bp = Blueprint("messenger", __name__)
 messages = []
-
+chats = {}
 @messenger_bp.route("/messenger", methods=["GET", "POST"])
 def messenger():
     if "username" not in session:
@@ -12,7 +12,7 @@ def messenger():
         msg = request.form["message"]
         messages.append(f"{session['username']}: {msg}")
 
-    return render_template("messenger.html", username=session["username"], messages=messages)
+    return render_template("chat.html", username=session["username"], messages=messages, chats=chats)
 
 @messenger_bp.route("/clear", methods=["POST"])
 def clear_messages():

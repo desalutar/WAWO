@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Мессенджер</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+<div class="chat-container">
+    <div class="sidebar" id="sidebar">
+        <h3>Пользователи</h3>
+        <ul id="user-list">
+            {% for user in users %}
+            <li data-userid="{{ user.id }}">{{ user.username }}</li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn">Выйти</a>
+    </div>
+    <div id="dragbar"></div>
+    <div class="chat-area">
+        <div id="chat-header">Выберите пользователя для начала чата</div>
+        <div id="messages"></div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Введите сообщение..." autocomplete="off" />
+            <button type="submit" id="send-button" title="Отправить">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 24 24">
+                    <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+let selectedUserId = null;
+const userList = document.getElementById('user-list');
+const messagesDiv = document.getElementById('messages');
+const chatHeader = document.getElementById('chat-header');
+const messageForm = document.getElementById('message-form');
+const messageInput = document.getElementById('message-input');
+
+userList.addEventListener('click', e => {
+    if (e.target.tagName === 'LI') {
+        selectedUserId = e.target.getAttribute('data-userid');
+        chatHeader.textContent = 'Чат с ' + e.target.textContent;
+        messagesDiv.innerHTML = '';
+        messageForm.style.display = 'flex';
+        loadMessages();
+    }
+});
+
+messageForm.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!selectedUserId) return;
+    const content = messageInput.value.trim();
+    if (!content) return;
+    fetch('/send_message', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({receiver_id: selectedUserId, content: content})
+    }).then(res => res.json()).then(data => {
+        if (data.status === 'success') {
+            messageInput.value = '';
+            loadMessages();
+        }
+    });
+});
+
+function loadMessages() {
+    if (!selectedUserId) return;
+    fetch('/messages/' + selectedUserId)
+        .then(res => res.json())
+        .then(data => {
+            messagesDiv.innerHTML = '';
+            data.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('message');
+                msgDiv.classList.add(msg.sender == {{ session['user_id'] }} ? 'sent' : 'received');
+                msgDiv.textContent = msg.content;
+                messagesDiv.appendChild(msgDiv);
+            });
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+}
+
+// Автообновление сообщений каждые 3 секунды
+setInterval(() => {
+    if (selectedUserId) loadMessages();
+}, 3000);
+
+// Скрипт для изменения ширины левой панели
+const dragbar = document.getElementById('dragbar');
+const sidebar = document.getElementById('sidebar');
+const chatContainer = document.querySelector('.chat-container');
+
+let isDragging = false;
+
+dragbar.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    document.body.style.cursor = 'ew-resize';
+});
+
+document.addEventListener('mouseup', function(e) {
+    if (isDragging) {
+        isDragging = false;
+        document.body.style.cursor = 'default';
+    }
+});
+
+document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    let containerOffsetLeft = chatContainer.getBoundingClientRect().left;
+    let pointerRelativeXpos = e.clientX - containerOffsetLeft;
+
+    const minWidth = 150;
+    const maxWidth = 500;
+
+    if (pointerRelativeXpos < minWidth) pointerRelativeXpos = minWidth;
+    if (pointerRelativeXpos > maxWidth) pointerRelativeXpos = maxWidth;
+
+    sidebar.style.width = pointerRelativeXpos + 'px';
+});
+</script>
+</body>
+</html>
