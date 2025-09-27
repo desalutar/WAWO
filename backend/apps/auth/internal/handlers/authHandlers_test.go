@@ -3,7 +3,7 @@ package handlers
 import (
 	"backend/apps/auth/internal/model"
 	"backend/apps/auth/internal/service/mocks"
-	auth "backend/pkg/gen/proto"
+	auth "backend/pkg/gen/auth/proto"
 	"context"
 	"fmt"
 	"testing"

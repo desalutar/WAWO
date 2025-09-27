@@ -5,7 +5,7 @@ import (
 	"backend/apps/auth/internal/repository"
 	"backend/apps/auth/internal/service"
 	"backend/pkg/common/utils"
-	authpb "backend/pkg/gen/proto"
+	authpb "backend/pkg/gen/auth/proto"
 	"log"
 	"net"
 	"os"
@@ -24,9 +24,9 @@ func StartServer(logger *zap.Logger, storage repository.Auther) {
 		RefreshSecret: os.Getenv("REFRESH_SECRET"),
 	}
 
-	lis, err := net.Listen("tcp", ":50054")
+	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
-		log.Printf("Failed to listen: %v", err)
+		log.Printf("Failed to listen authServer: %v", err)
 	}
 
 	grpcServer := grpc.NewServer()
@@ -37,7 +37,7 @@ func StartServer(logger *zap.Logger, storage repository.Auther) {
 
 	reflection.Register(grpcServer)
 
-	log.Println("gRPC-Сервер запущен на :50054")
+	log.Println("Auth_gRPC_Server запущен на :50051")
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("ошибка запуска gRPC-сервера: %v", err)
 	}

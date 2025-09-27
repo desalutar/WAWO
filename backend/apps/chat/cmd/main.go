@@ -1,16 +1,16 @@
 package main
 
 import (
-	"backend/apps/auth/internal/model"
-	"backend/apps/auth/internal/repository"
-	"backend/apps/auth/internal/server"
+	"backend/apps/chat/internal/model"
+	"backend/apps/chat/internal/repository"
+	"backend/apps/chat/internal/server"
 	"backend/pkg/common/cache"
-	"github.com/joho/godotenv"
 	"backend/pkg/common/db"
-	"go.uber.org/zap"
 	"log"
 	"os"
-) 
+	"github.com/joho/godotenv"
+	"go.uber.org/zap"
+)
 
 func main() {
 	_ = godotenv.Load()
@@ -20,7 +20,7 @@ func main() {
 		log.Fatal("failed to connect DB: ", )
 	}
 
-	err = db.RunAutoMigrate(dbConn, model.UserAuth{})
+	err = db.RunAutoMigrate(dbConn, model.Dialog{}, model.DialogParticipant{})
 	if err != nil {
 		log.Fatalf("migration failed: %v", err)
 	} 
@@ -29,7 +29,7 @@ func main() {
 	redisPassword := os.Getenv("CACHE_PASSWORD")
 	redisCache := cache.NewRedisCache(redisAddr, redisPassword, 0)
 
-	authStorage := repository.NewAuthRepo(dbConn, redisCache)
+	chatStorage := repository.NewChatRepo(dbConn, redisCache)
 
-	server.StartServer(&zap.Logger{}, authStorage)
+	server.StartChatServer(&zap.Logger{}, chatStorage)
 }
