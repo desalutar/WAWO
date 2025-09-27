@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="static/styles.css">
+    <meta charset="UTF-8" />
     <title>Регистрация</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <a href="{{ url_for('auth.login') }}">Уже есть аккаунт? Войти</a> -->
 </head>
 <body>
-    <!-- <h2 class="register">Регистрация</h2> -->
-    <form method="POST">
-        <div class="chat-footer">
-        <h2 class="register">Регистрация</h2>
-        <input type="text" class="chat-input-reg" name="username" placeholder="Имя" required>
-        <input type="password" class="chat-input-reg" name="password" placeholder="Пароль" required>
-        <button type="submit" class="send-btn">Зарегистрироваться</button>
-        <p style="color: cornflowerblue;">Уже есть аккаунт? <a href="/login">Войти</a></p>
-        </div>
+<div class="container">
+    <h2>Регистрация</h2>
+    <form method="post">
+        <input type="text" name="username" placeholder="Имя пользователя" required />
+        <input type="password" name="password" placeholder="Пароль" required />
+        <button type="submit">Зарегистрироваться</button>
     </form>
-    <!-- <p style="color: cornflowerblue;">Уже есть аккаунт? <a href="/login">Войти</a></p> -->
+    <p>Уже есть аккаунт? <a href="{{ url_for('auth.login') }}">Войти</a></p>
+</div>
 </body>
 </html>
